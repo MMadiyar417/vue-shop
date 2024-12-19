@@ -1,20 +1,20 @@
 <template>
 
-  <div class="flex justify-center items-center min-h-60">
+  <div class="flex flex-col justify-center items-center min-h-60">
     <h1 class=" mr-auto text-[36px] font-bold mb-3">
       Каталог
     </h1>
-
     <ProgressSpinner v-if="pending"/>
     <div
     v-else
-     class="flex items-start gap-3 flex-wrap w-full">
+     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 "
+    >
+
 
       <Product
       v-for="product in products"
       :key="product.id"
       :item="product"
-      class="w-full p-4 sm:w-1/4 lg:w-1/3"
       />
     </div>
   </div>
@@ -23,38 +23,33 @@
 
 
 <script >
-import { onMounted, ref } from 'vue'
-import { getProducts,  } from '@/api/products.js'
+import { onMounted, computed} from 'vue'
 import  Product from '@/components/product/Product.vue'
+import { useProducts } from '@/stores/products';
+
 
 export default {
   components: {Product},
   setup(){
-    const pending = ref(true)
-    const products = ref([])
-
-    const getData = async () => {
-      pending.value = true
-        try {
-            const data = await getProducts()
-
-            products.value = data
+    const ProductsStore = useProducts()
 
 
-        } catch (error) {
-            console.log(error);
+    const products = computed(()=> {
+      return ProductsStore.products
+    })
+    const pending = computed(()=> {
+      return ProductsStore.pending
+    })
 
-        } finally {
-          pending.value = false
+    const { getData } = ProductsStore
 
-        }
-    }
     onMounted(async () => {
         await getData()
     })
     return {
       products,
-      pending
+      pending,
+      ProductsStore
     }
   }
 }

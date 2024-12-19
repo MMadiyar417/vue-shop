@@ -53,15 +53,23 @@
 
 
 <script >
-import { onMounted, ref } from 'vue'
+import { useProduct } from '@/stores/product';
+import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router';
-import { getProduct,  } from '@/api/products.js'
 
 export default {
   setup(){
+    const  productStore = useProduct()
     const route = useRoute()
-    const pending = ref(true)
-    const product = ref([])
+
+    const product = computed(()=> {
+      return productStore.products
+    })
+    const pending = computed(()=> {
+      return productStore.pending
+    })
+
+    const { getData } = productStore
 
     const addFavorites = (item) => {
           localStorage.setItem('favorites', JSON.stringify(item))
@@ -71,24 +79,8 @@ export default {
           localStorage.setItem('cart', JSON.stringify(item))
 
           }
-    const getData = async () => {
-      pending.value = true
-        try {
-            const data = await getProduct(route.params.id)
-
-            product.value = data
-
-
-        } catch (error) {
-            console.log(error);
-
-        } finally {
-          pending.value = false
-
-        }
-    }
     onMounted(async () => {
-        await getData()
+        await getData(route.params.id)
     })
     return {
       product,

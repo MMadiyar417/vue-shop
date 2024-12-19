@@ -3,7 +3,7 @@
 <template>
     <router-link
     :to="`product/${item.id}`"
-    class="flex flex-col gap-3 relative overflow-hidden shadow-lg shadow-cyan-500/50 rounded-lg"
+    class="flex flex-col gap-3 relative overflow-hidden shadow-lg shadow-cyan-500/50 rounded-lg p-4"
     >
       <img
       :src="item.image"

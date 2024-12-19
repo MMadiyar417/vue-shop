@@ -7,13 +7,12 @@
     <ProgressSpinner v-if="pending"/>
     <div
     v-else
-     class="flex items-start gap-3 flex-wrap w-full">
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
 
       <Product
       v-for="product in products"
       :key="product.id"
       :item="product"
-      class="w-1/4 p-4"
       />
     </div>
   </div>
@@ -22,25 +21,28 @@
 
 
 <script >
-import { onMounted, ref } from 'vue'
+import { onMounted, computed } from 'vue'
 import  Product from '@/components/product/Product.vue'
+import { useFavorites } from '@/stores/favoritesProducts.js';
+
 
 export default {
   components: {Product},
   setup(){
-    const pending = ref(true)
-    const products = ref([])
+    const ProductsStore = useFavorites()
+
+
+    const products = computed(()=> {
+      return ProductsStore.products
+    })
+    const pending = computed(()=> {
+      return ProductsStore.pending
+    })
+
+    const { getData } = ProductsStore
 
     onMounted( () => {
-      pending.value = true
-
-      setTimeout(()=> {
-        const data = localStorage.getItem('favorites');
-        console.log(data);
-        products.value.push(JSON.parse(data))
-        pending.value = false
-      }, 1000)
-
+         getData()
     })
     return {
       products,

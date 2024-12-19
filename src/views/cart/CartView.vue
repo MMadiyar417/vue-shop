@@ -31,16 +31,18 @@ export default {
     const pending = ref(true)
     const products = ref([])
 
-    onMounted( () => {
+    const getData = ()=> {
       pending.value = true
-
       setTimeout(()=> {
-        const data = localStorage.getItem('favorites');
-        console.log(data);
+        const data = localStorage.getItem('cart');
+
         products.value.push(JSON.parse(data))
+
         pending.value = false
       }, 1000)
-
+    }
+    onMounted( () => {
+        getData()
     })
     return {
       products,

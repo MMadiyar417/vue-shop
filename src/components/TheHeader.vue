@@ -14,7 +14,9 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <router-link to="/favorites">
+          <router-link
+          class="relative"
+          to="/favorites">
             <vue-feather
             class=" cursor-pointer"
             type="heart"
